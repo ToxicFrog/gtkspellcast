@@ -1,0 +1,12 @@
+(this is just a placeholder)
+
+License information: GPL 3.0. See COPYING for the text of the license.
+Everything in this source tree is copyright (c) 2007,2008 Ben Kelly,
+except for the contents of ui/gtk/images/, which are copyright (c)
+1993 Andrew Plotkin.
+
+TODO: manual text, rules text, gesture selection, question-answer support
+	+ lots of internal API stuff and the client core
+	+ the entire server
+	+ networking
+	+ some other stuff I've probably forgotten
