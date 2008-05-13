@@ -37,11 +37,22 @@ for _,dialog in ipairs { "About", "Rules", "Manual", "Spellbook" } do
 end
 
 -- install the spellbook
+local sb_add_cat
+
 local spellbook = require "ui.gtk.spellbook"
 
-for _,category in ipairs(spellbook) do
-	print("CAT", category.name)
-	
+list.imapv(spellbook, sb_add_cat)
+
+for _,order in ipairs {
+	L "lhs,rhs" "lhs.name < rhs.name",
+	L "lhs,rhs" "lhs.gest[1] < rhs.gest[1]",
+	L "lhs,rhs" "lhs.gest[#lhs.gest] < rhs.gest[#rhs.gest]"
+} do
+	table.sort(spellbook.spells, order)
+	sl_make(spellbook.spells)
+end
+
+function sb_add_cat(category)
 	local wcat = aux.glade_load_autoconnect("ui/gtk/help.glade", "Category")
 	gtk.label_set_text(wcat.CategoryName.handle, category.name)
 	gtk.box_pack_start(ui.help.CategoryList.handle, wcat.Category.handle, false, true, 0)
@@ -49,10 +60,18 @@ for _,category in ipairs(spellbook) do
 	for _,spell in ipairs(category) do
 		print("SPELL", spell.name, spell.gest)
 		local wspel = aux.glade_load_autoconnect("ui/gtk/help.glade", "Spell")
-		gtk.label_set_text(wspel.SpellName.handle, spell.name)
+		gtk.label_set_text(wspel.SpellName.handle, spell.name.."      ")
 		
-		local gest = gtk.label_new("   [ "..spell.gest.." ]")
-		gtk.box_pack_end(wspel.SpellGestures.handle, gest, true, true, 0)
+		-- do the gestures
+		for _,g in ipairs(spell.gest) do
+			local img
+			if g == "or" then
+				img = gtk.label_new("   or   ")
+			else
+				img = gtk.image_new_from_file("ui/gtk/images/s"..g..".png")
+			end
+			gtk.box_pack_end(wspel.SpellGestures.handle, img, true, true, 0)
+		end
 		
 		gtk.text_buffer_insert_at_cursor(
 			gtk.text_view_get_buffer(wspel.SpellDescription.handle),

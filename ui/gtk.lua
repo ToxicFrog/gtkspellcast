@@ -1,3 +1,40 @@
+--[[
+	as a UI module, we need to expose a bunch of API functions:
+
+		[ player related ]
+		FIXME specify player structure
+		
+		ui.add_player(player)
+	add a player status to the UI. FIXME may be removed and rolled into update_player
+
+		ui.update_player(player)
+	update a player's status.
+
+		ui.remove_player(player)
+	remove a player's status from the UI
+
+		[ rules related ]
+		FIXME specify spellbook structure
+		
+		ui.load_spellbook(sb)
+	load the given spellbook and expose its contents to the use
+	
+		[ gameplay related ]
+		
+		ui.add_question(q)
+		FIXME specify question structure
+		
+		change state?
+		emit event?
+		emit message?
+
+		[ system related]
+		
+		ui.mainloop()
+	run the UI main loop FIXME will be removed and replaced with a yielding coroutine
+
+
+
 -- events we need to worry about
 -- menu: join game, host game, exit, edit options, manual, rules, spells, about
 -- text entry
