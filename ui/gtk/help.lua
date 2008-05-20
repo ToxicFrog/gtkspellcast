@@ -36,28 +36,6 @@ for _,dialog in ipairs { "About", "Rules", "Manual", "Spellbook" } do
 	end
 end
 
--- install the spellbook
-local spellbook = require "ui.gtk.spellbook"
-
-for _,category in ipairs(spellbook) do
-	print("CAT", category.name)
-	
-	local wcat = aux.glade_load_autoconnect("ui/gtk/help.glade", "Category")
-	gtk.label_set_text(wcat.CategoryName.handle, category.name)
-	gtk.box_pack_start(ui.help.CategoryList.handle, wcat.Category.handle, false, true, 0)
-	
-	for _,spell in ipairs(category) do
-		print("SPELL", spell.name, spell.gest)
-		local wspel = aux.glade_load_autoconnect("ui/gtk/help.glade", "Spell")
-		gtk.label_set_text(wspel.SpellName.handle, spell.name)
-		
-		local gest = gtk.label_new("   [ "..spell.gest.." ]")
-		gtk.box_pack_end(wspel.SpellGestures.handle, gest, true, true, 0)
-		
-		gtk.text_buffer_insert_at_cursor(
-			gtk.text_view_get_buffer(wspel.SpellDescription.handle),
-			spell.desc, #spell.desc)
-		gtk.box_pack_start(wcat.SpellList.handle, wspel.Spell.handle, false, true, 0)
-	end
-end
-
+-- load the spellbook handlers, which will be called by the core to install
+-- the spellbook
+require "ui.gtk.spellbook"
