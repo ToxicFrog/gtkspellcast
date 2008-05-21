@@ -32,7 +32,7 @@
 		
 		ui.mainloop()
 	run the UI main loop FIXME will be removed and replaced with a yielding coroutine
-
+]]
 
 
 -- events we need to worry about
