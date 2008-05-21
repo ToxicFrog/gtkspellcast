@@ -42,4 +42,6 @@ ui.update_player {
 	monsters = {};
 }
 
+ui.load_spellbook(require "spellbooks.classic")
+
 ui.mainloop()
