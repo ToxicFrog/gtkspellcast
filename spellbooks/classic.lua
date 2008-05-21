@@ -27,7 +27,7 @@ by wizards. The shield lasts for that turn only, but one shield will cover all
 such attacks made against the subject that turn.$pp
 ]]
 
-spell 'Remove enchantment' 'P-D-W-P' [[
+spell 'Remove Enchantment' 'P-D-W-P' [[
 $pp If the subject of this spell is currently being affected by any of the
 spells in the  "enchantments" section, or if spells from that section are cast
 at him at the same time as the remove enchantment, then all such spells
@@ -40,7 +40,7 @@ the spell is to destroy any monster upon which it is cast, although the monster
 can attack in that turn.$pp
 ]]
 
-spell 'Magic mirror' '(c-(w' [[
+spell 'Magic Mirror' '(c-(w' [[
 $pp Any spell cast at the subject of this spell is reflected back at the caster
 of that spell for that turn only. This includes spells  like 'missile' and
 'lightning bolt' but does not include attacks by monsters already in existence,
@@ -55,7 +55,7 @@ mirror back at a wizard who .I also has a mirror, the spell bounces back and
 forth until it falls apart.$pp
 ]]
 
-spell 'Counter-spell' 'W-P-P or W-W-S' [[
+spell 'Counter-Spell' 'W-P-P or W-W-S' [[
 $pp Any other spell cast upon the subject in the same turn has no effect
 whatever. In the case of blanket-type spells, which affect more than one person,
 the subject of the 'counter-spell' alone is protected. For example, a 'fire
@@ -70,7 +70,7 @@ other properties. The spell has two alternative gesture sequences, either of
 which may be used at any time.$pp
 ]]
 
-spell 'Dispel magic' '(c-D-P-W' [[
+spell 'Dispel Magic' '(c-D-P-W' [[
 $pp This spell acts as a combination of 'counter-spell' and 'remove
 enchantment', but its effects are universal rather than limited to the subject
 of the spell. It will stop any spell cast in the same turn from working (apart
@@ -83,7 +83,7 @@ stabs or surrenders, since they are not spells (although  the 'shield' effect
 may block a stab.)$pp
 ]]
 
-spell 'Raise dead' 'D-W-W-F-W-(c' [[
+spell 'Raise Dead' 'D-W-W-F-W-(c' [[
 $pp The subject of this spell is usually a recently dead  human or monster
 corpse (it will not work on elementals, which dissipate when destroyed.) When
 the spell is cast, life is instilled back into the corpse and any damage which
@@ -102,7 +102,7 @@ spell which affects corpses properly; therefore, it cannot be stopped by a
 their subject.  Once alive the subject is treated as normal.$pp
 ]]
 
-spell 'Cure light wounds' 'D-F-W' [[
+spell 'Cure Light Wounds' 'D-F-W' [[
 $pp If the subject has received damage then he is cured by 1 point as if that
 point had not been inflicted. (Recall that all spells are resolved
 simultanously; if a wizard is suffers his 15th point of damage at the same time
@@ -111,7 +111,7 @@ damage at the end of the turn.) The effect is not removed by a 'dispel magic' or
 'remove enchantment'.$pp
 ]]
 
-spell 'Cure heavy wounds' 'D-F-P-W' [[
+spell 'Cure Heavy Wounds' 'D-F-P-W' [[
 $pp This spell is the same as 'cure light wounds' for its effect, but 2 points
 of damage are cured instead of 1, or only 1 if only 1 had been sustained. A side
 effect is that the spell will also cure a  disease. (Note that 'raise dead' on a
@@ -209,14 +209,14 @@ although the storm will affect others as normal. If directed at an ice
 elemental, the fireball will destroy it before it can attack.$pp
 ]]
 
-spell 'Fire storm' 'S-W-W-(c' [[
+spell 'Fire Storm' 'S-W-W-(c' [[
 $pp Everything not resistant to heat sustains 5 points of damage that turn. The
 spell cancels wholly, causing no damage, with either an 'ice storm' or an ice
 elemental. It will destroy but not be destroyed by a fire elemental. Two 'fire
 storms' act as one.$pp
 ]]
 
-spell 'Ice storm' 'W-S-S-(c' [[
+spell 'Ice Storm' 'W-S-S-(c' [[
 $pp Everything not resistant to cold sustains 5 points of damage that turn. The
 spell cancels wholly, causing no damage, with either a 'fire storm' or a fire
 elemental; it will cancel locally with a 'fireball', sparing the subject of the
@@ -292,7 +292,7 @@ has no effect on monsters.  If the subject is also the subject  of 'amnesia',
 spells work.$pp
 ]]
 
-spell 'Anti-spell' 'S-P-F' [[
+spell 'Anti-Spell' 'S-P-F' [[
 $pp On the turn following the casting of this spell, the subject cannot include
 any gestures made on or before this turn in a spell sequence and must restart a
 new spell from the beginning of that spell sequence. (This is marked by a
@@ -301,7 +301,7 @@ does not affect spells which are cast on the same turn; nor does it affect
 monsters.$pp
 ]]
 
-spell 'Protection from Evil' 'W-W-P' [[
+spell 'Circle of Protection' 'W-W-P' [[
 $pp For this turn and the following three turns, the subject of this spell is
 protected as if using a 'shield' spell, thus leaving both hands free. Concurrent
 'shield' spells offer no further protection, and  compound 'protection from
@@ -362,7 +362,7 @@ Non-hastened wizards and monsters can see everything the hastened individual is
 doing.  Hastened monsters can change target in the extra turns if desired.$pp
 ]]
 
-spell 'Time stop' 'S-P-P-(c' [[
+spell 'Time Stop' 'S-P-P-(c' [[
 $pp The subject of this spell immediately takes an extra turn, on which no-one
 can see or know about unless they are harmed. All non-affected beings have no
 resistance to any form of attack, e.g. a wizard halfway through the duration of
@@ -372,7 +372,7 @@ time-stopped elementals affect everyone, resistance to heat or cold being
 immaterial in that turn.$pp
 ]]
 
-spell 'Delayed effect' 'D-W-S-S-S-P' [[
+spell 'Delayed Effect' 'D-W-S-S-S-P' [[
 $pp This spell must be cast upon a wizard. The next spell the subject completes,
 provided it is in one of the next three turns, is "banked" until needed -- i.e.
 it fails to work until its caster desires. (If you have a spell banked, you will
