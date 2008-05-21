@@ -141,6 +141,7 @@ end
 
 function ui.widgets.SpellListButton:clicked()
 	ui.message("Spell list button clicked")
+	gtk.widget_show_all(ui.spell_list.handle)
 end
 
 function ui.widgets.MainWindow:delete_event()

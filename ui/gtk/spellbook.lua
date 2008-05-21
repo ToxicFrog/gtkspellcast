@@ -1,7 +1,11 @@
 local gtk,glade,aux = ui.ctx.gtk, ui.ctx.glade, ui.ctx.aux
 local sb_setup_detailed,sb_setup_byfirst,sb_setup_bylast,sb_setup_byname
 
+local sb_list
+
 function ui.load_spellbook(sb)
+	sb_list = aux.glade_load_autoconnect("ui/gtk/help.glade", "Spell List")
+	ui.spell_list = sb_list.SpellList
 	sb_setup_detailed(sb)
 	sb_setup_byfirst(sb)
 	sb_setup_bylast(sb)
@@ -40,12 +44,39 @@ end
 
 function sb_setup_byfirst(sb)
 	print "SB by first gesture"
+	table.sort(sb, function(lhs, rhs) return lhs.gestures < rhs.gestures end)
+	local height = math.ceil(#sb/2)
+	
+	-- set up the table
+	gtk.table_resize(sb_list.ByFirst.handle, height, 2)
+	
+	for i=1,height do
+		local spell = sb[i]
+		local spellgui = aux.glade_load_autoconnect("ui/gtk/help.glade", "Spell List Entry")
+		
+		gtk.box_pack_start(spellgui.Gestures.handle, gtk.label_new(spell.gestures), false, false, 0)
+		
+		-- pack spell into first col of table
+		gtk.table_attach(sb_list.ByFirst.handle, spellgui.SpellListEntry.handle, 0, 1, i-1, i, 5, 5, 0, 0)
+	end
+	
+	for i=height+1,#sb do
+		local spell = sb[i]
+		local spellgui = aux.glade_load_autoconnect("ui/gtk/help.glade", "Spell List Entry")
+		
+		gtk.box_pack_start(spellgui.Gestures.handle, gtk.label_new(spell.gestures), false, false, 0)
+		
+		-- pack spell into second col of table
+		gtk.table_attach(sb_list.ByFirst.handle, spellgui.SpellListEntry.handle, 1, 2, i-1, i, 5, 5, 0, 0)
+	end
 end
 
 function sb_setup_bylast(sb)
 	print "SB by last gesture"
+	table.sort(sb, function(lhs, rhs) return lhs.gestures:reverse() < rhs.gestures:reverse() end)
 end
 
 function sb_setup_byname(sb)
 	print "SB by name"
+	table.sort(sb, function(lhs, rhs) return lhs.name < rhs.name end)
 end
