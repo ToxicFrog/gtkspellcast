@@ -89,84 +89,75 @@ Notes:
 		select left/right gesture
 ]]
 
-local gtks = require "gtk-server"
+require "ui.gtk.glade"
+local gtk = require "lgui"
+local win = glade.widgets(gtk.Glade.new "ui/gtk/spellcast.glade")
+local cb = setmetatable({}, { __index = function(self, name) self[name] = {} return self[name] end })
 
 ui = {}
-ui.ctx = gtks.library()
-local gtk,glade,aux = ui.ctx.gtk, ui.ctx.glade, ui.ctx.aux
 
-config.gtk = config.gtk or { layout = "new" }
-
-gtk.init()
-ui.widgets = aux.glade_load_autoconnect("ui/gtk/spellcast.glade", "Main Window")	
-
-require "ui.gtk.help"
-require ("ui.gtk.layout."..config.gtk.layout)
-
-gtk.widget_show_all(ui.widgets.MainWindow.handle)
-
-do
-	local buf = gtk.text_view_get_buffer(ui.widgets.TextDisplay.handle)
-	function ui.message(text)
-		gtk.text_buffer_insert_at_cursor(buf, "\n"..text, #text+1)
-	end
+function ui.message(text)
+    local iter = gtk.TextIter.new()
+    local buf = win.TextDisplay:get "buffer":cast(gtk.TextBuffer)
+    buf:getEndIter(iter)
+    buf:insert(iter, "\n"..text)
+--    gtk.Editable.insertAtCursor(win.TextBuffer, "\n"..text, #text+1)
 end
 
-function ui.widgets.MainMenuJoinGame:activate()
+config.gtk = config.gtk or { layout = "new" }
+--require "ui.gtk.help"
+--require ("ui.gtk.layout."..config.gtk.layout)
+
+function cb.MainMenuJoinGame:activate()
 	ui.message("Join Game selected")
 end
 
-function ui.widgets.MainMenuHostGame:activate()
+function cb.MainMenuHostGame:activate()
 	ui.message("Host Game selected")
 end
 
-function ui.widgets.SubmitButton:toggled()
-	ui.message("Submit button toggled, status is: "..gtk.toggle_button_get_active(self.handle))
+function cb.SubmitButton:toggled()
+	ui.message("Submit button toggled, status is: "..tostring(self:get "active"))
 end
 
-function ui.widgets.TextEntry:activate()
-	local text = gtk.entry_get_text(self.handle)
-	ui.message("Text entry activated, text is: "..text)
-	
-	local f = loadstring(text)
-	if f then
-		local r, err = pcall(f)
-		if not r then
-			ui.message("Error: "..err)
-		end
-	end
-		
-	gtk.entry_set_text(self.handle, "")
-end
-
-function ui.widgets.SpellListButton:clicked()
+function cb.SpellListButton:clicked()
 	ui.message("Spell list button clicked")
 	gtk.widget_show_all(ui.spell_list.handle)
 end
 
-function ui.widgets.MainWindow:delete_event()
-	print("Exiting")
-	os.exit(0)
+function cb.TextEntry:activate()
+    local text = self:get "text"
+    ui.message("Text entry: "..text)
+    
+    self:set("text", "")
+
+    if not text:match "^lua>" then return end
+    
+    local f = loadstring(text:sub(5,-1))
+    if f then
+        local r,err = pcall(f)
+        if not r then
+            ui.message("Error: "..err)
+        else
+            ui.message(tostring(err))
+        end
+    end
 end
 
-function ui.widgets.MainMenuExitGame:activate()
-	print("Exiting")
-	os.exit(0)
+function cb.MainWindow:delete_event()
+    os.exit(0)
 end
+
+function cb.MainMenuExitGame:activate()
+    os.exit(0)
+end
+
+glade.autoconnect(win, cb)
+win.MainWindow:showAll()
 
 function ui.mainloop()
-	while true do
-		local evt = gtk.server_callback("wait")
-		--ui.message(evt)
-
-		local handle,signal = string.split(evt, '/')
-		handle = tonumber(handle)
-		signal = signal:gsub('-', '_')
-
-		if ui.widgets[handle][signal] then
-			ui.widgets[handle][signal](ui.widgets[handle])
-		else
-			ui.message("Warning: unhandled event: "..evt)
-		end
-	end
+    return gtk.main()
 end
+
+return ui
+
