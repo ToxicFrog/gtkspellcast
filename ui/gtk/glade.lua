@@ -1,15 +1,22 @@
 -- utility functions for use with Glade UI definitions
-glade = {}
+local gtk = require "lgui"
 
+local glade = {}
 local mt = {}
 
 function mt:__index(name)
-    print("lookup", name)
     return self.xml:getWidget(name) or self.xml:getWidget((name:gsub('(.)([A-Z])', "%1 %2")))
 end
 
-function glade.widgets(gladexml)
+function glade.widgets(gladexml, ...)
+    if type(gladexml) == "string" then
+        return glade.widgets(gtk.Glade.new(gladexml, ...))
+    end
     return setmetatable({ xml = gladexml }, mt)
+end
+
+function glade.callbacks()
+  return setmetatable({}, { __index = function(self, name) self[name] = {} return self[name] end })
 end
 
 function glade.autoconnect(widgets, callbacks)
@@ -20,4 +27,6 @@ function glade.autoconnect(widgets, callbacks)
         end
     end
 end
+
+return glade
 

@@ -89,10 +89,8 @@ Notes:
 		select left/right gesture
 ]]
 
-require "ui.gtk.glade"
 local gtk = require "lgui"
-local win = glade.widgets(gtk.Glade.new "ui/gtk/spellcast.glade")
-local cb = setmetatable({}, { __index = function(self, name) self[name] = {} return self[name] end })
+local glade = require "ui.gtk.glade"
 
 ui = {}
 
@@ -101,63 +99,25 @@ function ui.message(text)
     local buf = win.TextDisplay:get "buffer":cast(gtk.TextBuffer)
     buf:getEndIter(iter)
     buf:insert(iter, "\n"..text)
---    gtk.Editable.insertAtCursor(win.TextBuffer, "\n"..text, #text+1)
 end
+
+ui.win = require "ui.gtk.mainwindow"
+require "ui.gtk.questions"
+require "ui.gtk.help"
+require "ui.gtk.spellbook"
 
 config.gtk = config.gtk or { layout = "new" }
---require "ui.gtk.help"
 --require ("ui.gtk.layout."..config.gtk.layout)
 
-function cb.MainMenuJoinGame:activate()
-	ui.message("Join Game selected")
-end
+ui.add_question {
+    question = "What spell do you want to cast (with the left hand)?";
+    answers = { "Shield", "Counterspell" };
+}
+ui.show_questions()
 
-function cb.MainMenuHostGame:activate()
-	ui.message("Host Game selected")
-end
-
-function cb.SubmitButton:toggled()
-	ui.message("Submit button toggled, status is: "..tostring(self:get "active"))
-end
-
-function cb.SpellListButton:clicked()
-	ui.message("Spell list button clicked")
-	gtk.widget_show_all(ui.spell_list.handle)
-end
-
-function cb.TextEntry:activate()
-    local text = self:get "text"
-    ui.message("Text entry: "..text)
-    
-    self:set("text", "")
-
-    if not text:match "^lua>" then return end
-    
-    local f = loadstring(text:sub(5,-1))
-    if f then
-        local r,err = pcall(f)
-        if not r then
-            ui.message("Error: "..err)
-        else
-            ui.message(tostring(err))
-        end
-    end
-end
-
-function cb.MainWindow:delete_event()
-    os.exit(0)
-end
-
-function cb.MainMenuExitGame:activate()
-    os.exit(0)
-end
-
-glade.autoconnect(win, cb)
-win.MainWindow:showAll()
+ui.win.MainWindow:showAll()
 
 function ui.mainloop()
     return gtk.main()
 end
-
-return ui
 

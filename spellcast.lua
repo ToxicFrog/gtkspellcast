@@ -1,7 +1,12 @@
--- load config file
-require "config"
+package.path = package.path.."/home/ben/devel/lualibs/?.lua;/home/ben/devel/lualibs/?/init.lua"
 
+require "util"
+
+require "config"
 require "ui.gtk"
+
+function ui.add_player() end
+function ui.update_player() end
 
 ui.add_player {
 	name = "Me";

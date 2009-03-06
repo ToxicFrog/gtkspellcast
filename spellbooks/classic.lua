@@ -55,7 +55,7 @@ mirror back at a wizard who .I also has a mirror, the spell bounces back and
 forth until it falls apart.$pp
 ]]
 
-spell 'Counter-Spell' 'W-P-P or W-W-S' [[
+local counterspell_desc = [[
 $pp Any other spell cast upon the subject in the same turn has no effect
 whatever. In the case of blanket-type spells, which affect more than one person,
 the subject of the 'counter-spell' alone is protected. For example, a 'fire
@@ -69,6 +69,10 @@ with another spell of its own type for the same effect as if it were alone.  The
 other properties. The spell has two alternative gesture sequences, either of
 which may be used at any time.$pp
 ]]
+
+spell 'Counter-Spell' 'W-W-S' (counterspell_desc)
+spell 'Counter-Spell' 'W-P-P' (counterspell_desc)
+
 
 spell 'Dispel Magic' '(c-D-P-W' [[
 $pp This spell acts as a combination of 'counter-spell' and 'remove
@@ -181,13 +185,15 @@ final gesture will stop it. The usual way to prevent being harmed by this spell
 is to disrupt it during casting -- using an 'anti-spell', for example.$pp
 ]]
 
-spell 'Lightning Bolt' 'D-F-F-D-D or W-D-D-(c' [[
+local lightning_desc = [[
 $pp The subject of this spell is hit by a bolt of lightning and sustains 5
 points of damage. Resistance to heat or cold is irrelevant. There are two
 gesture combinations for the spell, but the shorter one may be used only once
 per battle by any wizard. The longer one may be used without restriction. A
 'shield' spell offers no defence.$pp
 ]]
+spell 'Lightning Bolt' 'D-F-F-D-D' (lightning_desc)
+spell 'Lightning Bolt' 'W-D-D-(c' (lightning_desc)
 
 spell 'Cause Light Wounds' 'W-F-P' [[
 $pp The subject of this spell is inflicted with 2 points of damage. Resistance
