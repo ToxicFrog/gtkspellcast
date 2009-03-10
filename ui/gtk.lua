@@ -90,21 +90,21 @@ Notes:
 ]]
 
 local gtk = require "lgui"
-local glade = require "ui.gtk.glade"
+require "ui.gtk.glade"
 
 ui = {}
-
-function ui.message(text)
-    local iter = gtk.TextIter.new()
-    local buf = win.TextDisplay:get "buffer":cast(gtk.TextBuffer)
-    buf:getEndIter(iter)
-    buf:insert(iter, "\n"..text)
-end
 
 ui.win = require "ui.gtk.mainwindow"
 require "ui.gtk.questions"
 require "ui.gtk.help"
 require "ui.gtk.spellbook"
+
+function ui.message(text)
+    local iter = gtk.TextIter.new()
+    local buf = ui.win.TextDisplay:get "buffer":cast(gtk.TextBuffer)
+    buf:getEndIter(iter)
+    buf:insert(iter, "\n"..text)
+end
 
 config.gtk = config.gtk or { layout = "new" }
 --require ("ui.gtk.layout."..config.gtk.layout)
@@ -113,6 +113,13 @@ ui.add_question {
     question = "What spell do you want to cast (with the left hand)?";
     answers = { "Shield", "Counterspell" };
 }
+ui.show_questions()
+ui.add_question {
+    question = "foo"
+    ;answers = { "bar", "baz" }
+}
+ui.show_questions()
+ui.clear_questions()
 ui.show_questions()
 
 ui.win.MainWindow:showAll()
