@@ -5,18 +5,18 @@ local glade = {}
 local mt = {}
 
 function mt:__index(name)
-    local widget = self.xml:getWidget(name) or self.xml:getWidget(name:gsub('(.)([A-Z])', "%1 %2"))
+    local widget = self.xml:getWidget(name) or self.xml:getWidget( (name:gsub('(.)([A-Z])', "%1 %2")) )
     
     if not widget then return nil end
     
     local function __index(this, name)
         local f = widget[name]
         if f then
-            this[name] = function(_, ...)
+            rawset(this, name, function(_, ...)
                 return f(widget, ...)
-            end
+            end)
         else
-            this[name] = false
+            rawset(this, name, false)
         end
         return this[name]
     end

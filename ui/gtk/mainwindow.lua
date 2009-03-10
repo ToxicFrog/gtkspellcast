@@ -1,26 +1,24 @@
 local gtk = require "lgui"
-local glade = require "ui.gtk.glade"
-local win = glade.widgets("ui/gtk/spellcast.glade")
-local cb = glade.callbacks()
+local win = gtk.loadGlade("ui/gtk/spellcast.glade")
 
-function cb.MainMenuJoinGame:activate()
+function win.MainMenuJoinGame:activate()
 	ui.message("Join Game selected")
 end
 
-function cb.MainMenuHostGame:activate()
+function win.MainMenuHostGame:activate()
 	ui.message("Host Game selected")
 end
 
-function cb.SubmitButton:toggled()
+function win.SubmitButton:toggled()
 	ui.message("Submit button toggled, status is: "..tostring(self:get "active"))
 end
 
-function cb.SpellListButton:clicked()
+function win.SpellListButton:clicked()
 	ui.message("Spell list button clicked")
     ui.spell_list:showAll()
 end
 
-function cb.TextEntry:activate()
+function win.TextEntry:activate()
     local text = self:get "text"
     ui.message("Text entry: "..text)
     
@@ -41,15 +39,13 @@ function cb.TextEntry:activate()
     end
 end
 
-function cb.MainWindow:delete_event()
+function win.MainWindow:delete_event()
     os.exit(0)
 end
 
-function cb.MainMenuExitGame:activate()
+function win.MainMenuExitGame:activate()
     os.exit(0)
 end
-
-glade.autoconnect(win, cb)
 
 return win
 

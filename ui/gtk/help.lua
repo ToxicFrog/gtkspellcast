@@ -1,7 +1,5 @@
 -- all stuff related to the help dialogs
 local gtk = require "lgui"
-local glade = require "ui.gtk.glade"
-local cb = glade.callbacks()
 
 ui.help = {}
 
@@ -10,15 +8,14 @@ local function hider(win)
 end
 
 for _,dialog in ipairs { "About", "Rules", "Manual", "Spellbook" } do
-    ui.help[dialog] = glade.widgets(gtk.Glade.new("ui/gtk/help.glade", dialog))
+    ui.help[dialog] = gtk.loadGlade("ui/gtk/help.glade", dialog)
     local win = ui.help[dialog][dialog]
     
-    win:connect("delete-event", hider(win))
-    win:connect("response", hider(win))
+    win.delete_event = hider(win)
+    win.response = hider(win)
 
-    ui.win["HelpMenu"..dialog]:connect("activate", function(self)
-        print(dialog)
+    ui.win["HelpMenu"..dialog].activate = function(self)
         ui.help[dialog][dialog]:showAll()
-    end)
+    end
 end
 
