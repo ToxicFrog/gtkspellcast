@@ -1,3 +1,13 @@
+bin - program binaries and launch scripts
+lib - library binaries
+client - client-specific lua code
+server - server-specific lua code
+common - code shared by client and server
+ui - interface code
+ui/* - code for a specific interface module
+src - source code for compiled stuff (custom lua terp, lunatic python, etc)
+doc - documentation
+
 (this is just a placeholder)
 
 License information: GPL 3.0. See COPYING for the text of the license.
