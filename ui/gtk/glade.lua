@@ -4,28 +4,18 @@ local gtk = require "lgui"
 local glade = {}
 local mt = {}
 
+local function __newindex(this, name, value)
+    this:connect(name:gsub("_", "-"), value)
+end
+    
 function mt:__index(name)
     local widget = self.xml:getWidget(name) or self.xml:getWidget( (name:gsub('(.)([A-Z])', "%1 %2")) )
     
     if not widget then return nil end
     
-    local function __index(this, name)
-        local f = widget[name]
-        if f then
-            rawset(this, name, function(_, ...)
-                return f(widget, ...)
-            end)
-        else
-            rawset(this, name, false)
-        end
-        return this[name]
-    end
-    
-    local function __newindex(this, name, value)
-        widget:connect(name:gsub("_", "-"), value)
-    end
-    
-    return setmetatable( {}, { __index = __index, __newindex = __newindex } )
+    getmetatable(widget).__newindex = __newindex
+
+    return widget
 end
 
 function gtk.loadGlade(...)

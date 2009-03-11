@@ -1,5 +1,4 @@
 local gtk = require "lgui"
-local glade = require "ui.gtk.glade"
 
 local sb_list
 local sb_setup_detailed,sb_setup_byfirst,sb_setup_bylast,sb_setup_byname
@@ -9,7 +8,7 @@ function hider(widget)
 end
 
 function ui.load_spellbook(sb)
-	sb_list = glade.widgets(gtk.Glade.new("ui/gtk/help.glade", "Spell List Window"))
+	sb_list = gtk.loadGlade("ui/gtk/help.glade", "Spell List Window")
 	ui.spell_list = sb_list.SpellListWindow
 	sb_setup_detailed(sb)
 	sb_setup_byfirst(sb)
@@ -33,12 +32,12 @@ function sb_setup_detailed(sb)
 	for _,spell in ipairs(sb) do
 		if spell.category ~= cat then
 			cat = spell.category
-			cat_box = glade.widgets(gtk.Glade.new("ui/gtk/help.glade", "Category"))
+			cat_box = gtk.loadGlade("ui/gtk/help.glade", "Category")
             cat_box.CategoryName:set("label", cat)
             ui.help.Spellbook.CategoryList:packStart(false, true, 0, cat_box.Category)
 		end
 		
-		local spell_box = glade.widgets(gtk.Glade.new("ui/gtk/help.glade", "Spell"))
+		local spell_box = gtk.loadGlade("ui/gtk/help.glade", "Spell")
 		local gestures = gtk.Label.new("   [ "..spell.gestures.." ]")
 		
         spell_box.SpellName:set("label", spell.name)
@@ -55,7 +54,7 @@ function sb_build_table(sb, t)
 
 	for i=1,#sb do
 		local spell = sb[i]
-		local spellgui = glade.widgets(gtk.Glade.new("ui/gtk/help.glade", "Spell List Entry"))
+		local spellgui = gtk.loadGlade("ui/gtk/help.glade", "Spell List Entry")
 		
 		spellgui.Gestures:packStart(false, false, 0, gtk.Label.new(spell.gestures))
         spellgui.Name:set("label", spell.name)
