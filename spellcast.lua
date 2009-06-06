@@ -1,4 +1,26 @@
+-- top level design:
+--  load supporting libraries and set up environment and configuration
+--  load configured UI
+--  enter main loop
+--      select() on open sockets for 100ms
+--      call all registered update functions
+
+do
+    local _require = require
+    function require(...) print("require", ...) return _require(...) end
+end
+
 package.path = package.path.."/home/ben/devel/lualibs/?.lua;/home/ben/devel/lualibs/?/init.lua"
+
+require "socket"
+
+require "config"
+require "lib.events"
+require "ui.gtk"
+
+event.mainloop()
+
+os.exit(0)
 
 require "util"
 

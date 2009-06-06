@@ -5,7 +5,8 @@ local glade = {}
 local mt = {}
 
 local function __newindex(this, name, value)
-    this:connect(name:gsub("_", "-"), value)
+    print("Connecting", this, name, "to", value)
+    this:connect(name:gsub("_", "-"), value, this)
 end
     
 function mt:__index(name)
@@ -20,6 +21,7 @@ end
 
 function gtk.loadGlade(...)
     local xml = gtk.Glade.new(...)
+    if not xml then return end
     return setmetatable({ xml = xml }, mt)
 end
 

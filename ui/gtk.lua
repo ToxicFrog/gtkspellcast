@@ -93,11 +93,13 @@ local gtk = require "lgui"
 require "ui.gtk.glade"
 
 ui = {}
-
 ui.win = require "ui.gtk.mainwindow"
 require "ui.gtk.questions"
-require "ui.gtk.help"
 require "ui.gtk.spellbook"
+require "ui.gtk.help"
+
+--config.gtk = config.gtk or { layout = "new" }
+--require ("ui.gtk.layout."..config.gtk.layout)
 
 function ui.message(text)
     local iter = gtk.TextIter.new()
@@ -106,8 +108,17 @@ function ui.message(text)
     buf:insert(iter, "\n"..text)
 end
 
-config.gtk = config.gtk or { layout = "new" }
---require ("ui.gtk.layout."..config.gtk.layout)
+local function updateui()
+    while gtk.eventsPending() do
+        gtk.mainIteration()
+    end
+end
+
+event.register(updateui)
+
+ui.win.MainWindow:showAll()
+
+do return end
 
 ui.add_question {
     question = "What spell do you want to cast (with the left hand)?";

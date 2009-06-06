@@ -26,7 +26,7 @@ function win.TextEntry:activate()
 
     if not text:match "^>" then return end
     
-    local f,err = loadstring(text:sub(5,-1))
+    local f,err = loadstring(text:sub(2,-1))
     if f then
         local r,err = pcall(f)
         if not r then
