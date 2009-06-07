@@ -89,10 +89,12 @@ Notes:
 		select left/right gesture
 ]]
 
+ui = {}
+config.gtk = config.gtk or { turn_separator = true; save_logs = true; }
+
 local gtk = require "lgui"
 require "ui.gtk.glade"
 
-ui = {}
 ui.win = require "ui.gtk.mainwindow"
 require "ui.gtk.questions"
 require "ui.gtk.spellbook"

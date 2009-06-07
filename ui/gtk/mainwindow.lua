@@ -5,9 +5,10 @@ local win = gtk.loadGlade("ui/gtk/spellcast.glade")
 -- "Join Game" menu entry
 --------------------------------------------------------------------------------
 
-win.JoinGameGender:set("active", 0)
-
 function win.MainMenuJoinGame:activate()
+    win.JoinGameName:set("text", config.default_name)
+    win.JoinGameGender:set("active", config.default_gender_index)
+    win.HostGame:hideAll()
     win.JoinGame:showAll()
 end
 
@@ -19,7 +20,6 @@ function win.JoinGameOK:clicked()
         host = win.JoinGameHost:get "text";
         port = win.JoinGamePort:get "value";
         name = win.JoinGameName:get "text";
-        --gender = gtk.TreeModel.get(win.JoinGameGender, iter, 0);
         gender = win.JoinGameGender:getActiveText();
     }
     for k,v in pairs(game) do print(k,v) end
@@ -42,6 +42,9 @@ end
 --------------------------------------------------------------------------------
 
 function win.MainMenuHostGame:activate()
+    win.HostGameName:set("text", config.default_name)
+    win.HostGameGender:set("active", config.default_gender_index)
+    win.JoinGame:hideAll()
     win.HostGame:showAll()
 end
 
@@ -51,13 +54,60 @@ function win.HostGameOK:clicked()
         maxplayers = win.HostGameMaxPlayers:get "value";
     }
     
-    win.HostGame:hideAll()
-    server.host(game)
+    local result = server.host(game)
+    if result then
+        client.join {
+            host = "localhost";
+            port = game.port;
+            name = win.HostGameName:get "text";
+            gender = win.HostGameGender:getActiveText();
+        }
+        win.HostGame:hideAll()
+    end
 end
 
 function win.HostGameCancel:clicked()
     win.HostGame:hideAll()
 end
+
+--------------------------------------------------------------------------------
+-- "Options" menu
+--------------------------------------------------------------------------------
+
+win.ConfigSaveLogs:set("active", config.gtk.save_logs)
+win.ConfigTurnSep:set("active", config.gtk.turn_separator)
+
+function win.ConfigPlayerSetup:activate()
+    win.ConfigName:set("text", config.default_name)
+    win.ConfigGender:set("active", config.default_gender_index)
+    win.PlayerSetup:showAll()
+end
+
+function win.ConfigApply:clicked()
+    config.default_name = win.ConfigName:get "text"
+    config.default_gender = win.ConfigGender:getActiveText();
+    config.default_gender_index = win.ConfigGender:get "active"
+    commit_config()
+    win.PlayerSetup:hideAll()
+end
+
+function win.ConfigCancel:clicked()
+    win.PlayerSetup:hideAll()
+end
+
+function win.ConfigSaveLogs:toggled()
+    config.gtk.save_logs = win.ConfigSaveLogs:get "active"
+    commit_config()
+end
+
+function win.ConfigTurnSep:toggled()
+    config.gtk.turn_separator = win.ConfigTurnSep:get "active"
+    commit_config()
+end
+
+--------------------------------------------------------------------------------
+-- General UI widgets
+--------------------------------------------------------------------------------
 
 function win.SubmitButton:toggled()
 	ui.debug("Submit button toggled, status is: "..tostring(self:get "active"))

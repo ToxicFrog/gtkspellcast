@@ -5,48 +5,24 @@
 --  connect to server
 --  wait for events and dispatch them
 
-client = {}
-client.event = {}
+client = { event = {} }
 
-local game
+require "client.eventcore"
+require "client.eventsay"
 
-function client.event.default(evt)
-    ui.debug("[client] << %s", evt.event)
-end
-
-function client.event.iofail(evt)
-    ui.info("[client] connection lost: %s", evt.reason)
-    game = nil
-end
-
-function client.event.say(evt)
-    --lc.message { event = "say", subject = evt.who, object = evt.text }
-    ui.debug("client say-event processing")
-    if evt.who == game.name then
-        ui.message('You say, "%s"', evt.text)
-    else
-        ui.message('%s says, "%s"', evt.who, evt.text)
+function client.send(evt)
+    if not client.game then
+        return ui.info("[client] no game joined")
     end
-end
-
-local function dispatch(evt)
-    ui.debug("[client] event: %s", evt.event)
-    
-    for k,v in pairs(evt) do
-        ui.debug("[client][event] %s = %s", tostring(k), tostring(v))
-    end
-    
-    local fname = evt.event:gsub('%W', '_')
-    local f = client.event[fname] or client.events.default
-    f(evt)
+    return event.send(client.game.sock, evt)
 end
 
 -- join a game in progress
 -- fields in gameinfo struct:
 -- host port name gender
-function client.join(_game)
-    ui.info("[client] connecting to %s:%d", _game.host, _game.port)
-    local sock,err = socket.connect(_game.host, _game.port)
+function client.join(host, port)
+    ui.info("[client] connecting to %s:%d", game.host, game.port)
+    local sock,err = socket.connect(game.host, game.port)
     
     if not sock then
         ui.info("[client] connection failed: %s", err)
@@ -54,22 +30,20 @@ function client.join(_game)
     end
     
     ui.info("[client] connected")
-    game = _game
-    game.sock = sock
+    client.game {
+        host = game.host;
+        port = game.port;
+        name = game.name or config.name;
+        gender = game.gender or config.gender;
+        sock = sock;
+    }
     
-    event.register(sock, dispatch)
+    event.register(sock, client.dispatch)
 
     client.send {
         event = "join";
         name = game.name;
         gender = game.gender;
     }
-end
-
-function client.send(evt)
-    if not game then
-        return ui.info("[client] no game joined")
-    end
-    return event.send(game.sock, evt)
 end
 
