@@ -21,6 +21,8 @@ require "server.core"
 
 ui.load_spellbook(require "spellbooks.classic")
 
+pcall(function() return require "autoexec" end)
+
 event.mainloop()
 
 os.exit(0)
