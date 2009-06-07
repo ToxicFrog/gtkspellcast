@@ -101,11 +101,22 @@ require "ui.gtk.help"
 --config.gtk = config.gtk or { layout = "new" }
 --require ("ui.gtk.layout."..config.gtk.layout)
 
+function ui.scrolltobottom()
+    local iter = gtk.TextIter.new()
+    local buf = ui.win.TextDisplay:get "buffer":cast(gtk.TextBuffer)
+    buf:getEndIter(iter)
+    
+    local mark = buf:getMark("scroller") or buf:createMark("scroller", iter, false)
+    ui.win.TextDisplay:scrollToMark(mark)
+end
+
+
 function ui.message(fmt, ...)
     local iter = gtk.TextIter.new()
     local buf = ui.win.TextDisplay:get "buffer":cast(gtk.TextBuffer)
     buf:getEndIter(iter)
-    buf:insert(iter, "\n"..fmt:format(...))
+    buf:insert(iter, fmt:format(...).."\n")
+    ui.scrolltobottom()
 end
 
 local function updateui()

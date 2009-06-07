@@ -214,7 +214,7 @@
                 <property name="visible">True</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <child>
-                  <widget class="GtkScrolledWindow" id="scrolledwindow2">
+                  <widget class="GtkScrolledWindow" id="TextWindow">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -240,10 +240,14 @@ Hasted
 Timestopped
 Delayed effect
 Protected
-+ permanent versions of most of these</property>
++ permanent versions of most of these
+</property>
                       </widget>
                     </child>
                   </widget>
+                  <packing>
+                    <property name="padding">2</property>
+                  </packing>
                 </child>
                 <child>
                   <widget class="GtkTable" id="Questions">
