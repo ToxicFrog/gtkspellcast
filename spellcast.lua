@@ -5,27 +5,25 @@
 --      select() on open sockets for 100ms
 --      call all registered update functions
 
-do
-    local _require = require
-    function require(...) print("require", ...) return _require(...) end
-end
-
 package.path = package.path.."/home/ben/devel/lualibs/?.lua;/home/ben/devel/lualibs/?/init.lua"
 
 require "socket"
+require "util"
 
 require "config"
+require "lib.net"
 require "lib.events"
 require "ui.gtk"
+
+require "client.core"
+require "server.core"
+
+ui.load_spellbook(require "spellbooks.classic")
 
 event.mainloop()
 
 os.exit(0)
 
-require "util"
-
-require "config"
-require "ui.gtk"
 
 function ui.add_player() end
 function ui.update_player() end
@@ -68,7 +66,5 @@ ui.update_player {
 	};
 	monsters = {};
 }
-
-ui.load_spellbook(require "spellbooks.classic")
 
 ui.mainloop()

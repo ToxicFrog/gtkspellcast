@@ -101,11 +101,11 @@ require "ui.gtk.help"
 --config.gtk = config.gtk or { layout = "new" }
 --require ("ui.gtk.layout."..config.gtk.layout)
 
-function ui.message(text)
+function ui.message(fmt, ...)
     local iter = gtk.TextIter.new()
     local buf = ui.win.TextDisplay:get "buffer":cast(gtk.TextBuffer)
     buf:getEndIter(iter)
-    buf:insert(iter, "\n"..text)
+    buf:insert(iter, "\n"..fmt:format(...))
 end
 
 local function updateui()
@@ -116,7 +116,7 @@ end
 
 event.register(updateui)
 
-ui.win.MainWindow:showAll()
+ui.win.MainWindow:show()
 
 do return end
 
@@ -134,8 +134,4 @@ ui.clear_questions()
 ui.show_questions()
 
 ui.win.MainWindow:showAll()
-
-function ui.mainloop()
-    return gtk.main()
-end
 

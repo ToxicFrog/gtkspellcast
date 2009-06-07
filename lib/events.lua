@@ -34,58 +34,110 @@ local function deserialize(s)
     unpack[DC3] = function(s) return s == "true" end
     unpack[DC4] = function(s) return deserialize(s) end
 
+    local function val(tag, data)
+        return unpack[tag](data:sub(2,-2))
+    end
+    
     local t = {}
     for kvp in s:gmatch("%b"..SO..SI) do
-        local iter = kvp:gmatch('(['..DC1..DC2..DC3..DC4..'])(%b'..STX..ETX')')
+        local iter = kvp:gmatch('(['..DC1..DC2..DC3..DC4..'])(%b'..STX..ETX..')')
         
-        t[unpack(iter())] = unpack(iter())
-        local k,kvp = val(kvp)
-        local v = val(kvp)
-        t[k] = v
+        t[val(iter())] = val(iter())
     end
     
     return t
 end
 
-event = {}
-
-function event.send(sock, evt)
+local function sendevt(sock, evt)
     local buf = serialize(evt)
     sock:send(tostring(#buf)..'\n'..buf)
 end
 
-function event.recv(sock)
+local function recvevt(sock)
     local size = tonumber(sock:receive('*l'))
     if not size then return nil end
     
-    return deserialize(sock:receive(size))
+    local buf = sock:receive(size)
+    return deserialize(buf)
 end
 
 local sockets = {}
 local timers = {}
+local writebufs = {}
+
+local readlist,writelist
+
+local function mkreadlist()
+    readlist = {}
+    for sock in pairs(sockets) do
+        table.insert(readlist, sock)
+    end
+end
+
+local function mkwritelist()
+    writelist = {}
+    for sock,buf in pairs(writebufs) do
+        if #buf > 0 then
+            table.insert(writelist, sock)
+        end
+    end
+end
+
+event = {}--{ serialize = serialize, deserialize = deserialize }
+
+function event.send(sock, evt)
+    table.insert(writebufs[sock], evt)
+    if #writebufs[sock] == 1 then
+        mkwritelist()
+    end
+end
 
 function event.register(sock, fn)
     if not fn then
         timers[sock] = true
     else
-        table.insert(sockets, sock)
         sockets[sock] = fn
+        writebufs[sock] = {}
+        mkreadlist()
     end
 end
 
+function event.unregister(sock)
+    timers[sock] = nil
+    sockets[sock] = nil
+    writebufs[sock] = nil
+    mkreadlist()
+    mkwritelist()
+end
+
 function event.mainloop()
-    local ready
     while true do
-        -- process all sockets with pending messages on them
-        ready = socket.select(sockets, nil, 0.1)
-        for _,sock in ipairs(ready) do
-            sockets[sock](sock)
+        -- the lists are automatically kept updated by the register and send functions
+        -- select on the lists
+        rready,wready = socket.select(readlist, writelist, 0.1)
+        
+        -- send any pending messages
+        for _,sock in ipairs(wready) do
+            print("pending", sock, writebufs[sock][1])
+            local evt = table.remove(writebufs[sock], 1)
+            if #writebufs[sock] == 0 then
+                mkwritelist()
+            end
+            sendevt(sock, evt)
         end
         
-        -- process all local update functions
-        for f in pairs(timers) do
+        -- dispatch any pending events
+        for _,sock in ipairs(rready) do
+            local evt = recvevt(sock)
+            if evt then
+                sockets[sock](evt)
+            end
+        end
+        
+        -- process any registered timers
+         for f in pairs(timers) do
             f()
         end
-    end
+   end
 end
 

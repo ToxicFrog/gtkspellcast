@@ -1,12 +1,64 @@
 local gtk = require "lgui"
 local win = gtk.loadGlade("ui/gtk/spellcast.glade")
 
+--------------------------------------------------------------------------------
+-- "Join Game" menu entry
+--------------------------------------------------------------------------------
+
+win.JoinGameGender:set("active", 0)
+
 function win.MainMenuJoinGame:activate()
-	ui.message("Join Game selected")
+    win.JoinGame:showAll()
 end
 
+function win.JoinGameOK:clicked()
+    -- perform connect
+    local iter = gtk.TreeIter.new()
+    win.JoinGameGender:getActiveIter(iter)
+    local game = {
+        host = win.JoinGameHost:get "text";
+        port = win.JoinGamePort:get "value";
+        name = win.JoinGameName:get "text";
+        --gender = gtk.TreeModel.get(win.JoinGameGender, iter, 0);
+        gender = win.JoinGameGender:getActiveText();
+    }
+    for k,v in pairs(game) do print(k,v) end
+    
+    if #game.host == 0 or #game.name == 0 then
+        ui.message("[ui] You must enter a hostname and player name")
+        return
+    end
+    ui.message("[ui] join game: %s:%d %s %s", game.host, game.port, game.name, game.gender)
+    
+    win.JoinGame:hideAll()
+    client.join(game)
+end
+
+function win.JoinGameCancel:clicked()
+    win.JoinGame:hideAll()
+end
+
+--------------------------------------------------------------------------------
+-- "Host Game" menu entry
+--------------------------------------------------------------------------------
+
 function win.MainMenuHostGame:activate()
-	ui.message("Host Game selected")
+    win.HostGame:showAll()
+end
+
+function win.HostGameOK:clicked()
+    local game = {
+        port = win.HostGamePort:get "value";
+        maxplayers = win.HostGameMaxPlayers:get "value";
+    }
+    ui.message("[ui] host game: %d %d", game.port, game.maxplayers)
+    
+    win.HostGame:hideAll()
+    server.host(game)
+end
+
+function win.HostGameCancel:clicked()
+    win.HostGame:hideAll()
 end
 
 function win.SubmitButton:toggled()
@@ -21,6 +73,7 @@ end
 function win.TextEntry:activate()
     local text = self:get "text"
     ui.message("Text entry: "..text)
+    client.send { event = "say", text = text }
     
     self:set("text", "")
 

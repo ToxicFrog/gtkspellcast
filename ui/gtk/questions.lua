@@ -21,6 +21,7 @@ function ui.add_question(q)
     grid:attach(answers, 2, 3, #questions, #questions+1, shrinkfill, shrinkfill, 0, 0)
     
     answers:set("active", 0)
+    print("question", label, answers, sep)
 end
 
 function ui.show_questions()
@@ -33,12 +34,10 @@ end
 
 function ui.clear_questions()
     for _,q in ipairs(questions) do
+        print(q.label, q.answers, q.sep)
         grid:remove(q.label)
         grid:remove(q.answers)
         grid:remove(q.sep)
-        q.label:delete()
-        q.answers:delete()
-        q.sep:delete()
     end
     questions = {}
     grid:resize(1,3)
