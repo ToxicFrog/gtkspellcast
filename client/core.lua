@@ -8,14 +8,21 @@
 client = {}
 client.event = {}
 
+local game
+
 function client.event.default(evt)
     ui.debug("[client] << %s", evt.event)
+end
+
+function client.event.iofail(evt)
+    ui.info("[client] connection lost: %s", evt.reason)
+    game = nil
 end
 
 function client.event.say(evt)
     --lc.message { event = "say", subject = evt.who, object = evt.text }
     ui.debug("client say-event processing")
-    if evt.who == client.game.name then
+    if evt.who == game.name then
         ui.message('You say, "%s"', evt.text)
     else
         ui.message('%s says, "%s"', evt.who, evt.text)
@@ -37,17 +44,18 @@ end
 -- join a game in progress
 -- fields in gameinfo struct:
 -- host port name gender
-function client.join(game)
-    ui.info("[client] connecting to %s:%d", game.host, game.port)
-    local sock,err = socket.connect(game.host, game.port)
+function client.join(_game)
+    ui.info("[client] connecting to %s:%d", _game.host, _game.port)
+    local sock,err = socket.connect(_game.host, _game.port)
     
     if not sock then
         ui.info("[client] connection failed: %s", err)
         return nil,err
     end
+    
     ui.info("[client] connected")
+    game = _game
     game.sock = sock
-    client.game = game
     
     event.register(sock, dispatch)
 
@@ -59,8 +67,9 @@ function client.join(game)
 end
 
 function client.send(evt)
-    if not client.game then
+    if not game then
         return ui.info("[client] no game joined")
     end
-    return event.send(client.game.sock, evt)
+    return event.send(game.sock, evt)
 end
+

@@ -13,17 +13,29 @@ function server.event.default(sock, evt)
     ui.debug("[server] %s >> %s", sock:getpeername(), evt.event)
 end
 
+function server.event.iofail(sock, evt)
+    local name = game.clients[sock].name
+    ui.info("[server] %s disconnected: %s", name, evt.reason)
+    
+    if game.clients[sock].gender then
+        -- they were a proper, cnnected player
+        -- FIXME need better code to handle this once the rules engine starts!
+        -- broadcast disconnect message to all players
+        game.players[name] = nil
+        game.nrofplayers = game.nrofplayers - 1
+    end
+    game.clients[sock] = nil
+end
+
 function server.event.join(sock, evt)
     if game.players[evt.name] then
         return server.killclient(sock, "name already in use")
     end
     
-    local player = {
-        name = evt.name;
-        gender = evt.gender;
-        sock = sock;
-    }
-    
+    local player = game.clients[sock]
+    player.name = evt.name
+    player.gender = evt.gender
+
     game.players[player.name] = player
     game.clients[sock] = player
     game.nrofplayers = game.nrofplayers+1
@@ -42,13 +54,11 @@ local function mkdispatcher(sock)
     return function(evt)
         ui.debug("[server] event: %s", evt.event)
         
-        if not game.clients[sock] then
-            if evt.event ~= "join" then
-                -- the client has connected but hasn't joined yet
-                -- we don't allow this
-                server.killclient(sock, "must join before sending other messages")
-                return
-            end
+        if not game.clients[sock].gender and evt.event ~= "join" then
+            -- the client has connected but hasn't joined yet
+            -- we don't allow this
+            server.killclient(sock, "must join before sending other messages")
+            return
         else
             evt.who = game.clients[sock].name
         end
@@ -65,7 +75,7 @@ local function acceptor(sock)
     
     if client then
         ui.info("[server] client connected: %s", client:getpeername())
-        game.clients[client] = false
+        game.clients[client] = { name = "<<"..client:getpeername()..">>"; sock = client; }
         
         event.register(client, mkdispatcher(client))
     end

@@ -50,7 +50,10 @@ end
 
 local function sendevt(sock, evt)
     local buf = serialize(evt)
-    sock:send(tostring(#buf)..'\n'..buf)
+    local size,err = sock:send(tostring(#buf)..'\n'..buf)
+    if err then
+        killsock(sock,err)
+    end
 end
 
 local function recvevt(sock)
@@ -58,7 +61,8 @@ local function recvevt(sock)
     if not size then return nil,err end
     if not tonumber(size) then return nil,"malformed packet" end
     
-    local buf = sock:receive(size)
+    local buf,err = sock:receive(size)
+    if not buf then return nil,err end
     return deserialize(buf)
 end
 
@@ -67,6 +71,17 @@ local timers = {}
 local writebufs = {}
 
 local readlist,writelist
+
+local function killsock(sock, err)
+    local f = sockets[sock]
+    
+    sock:close()
+    event.unregister(sock)
+    f {
+        event = "iofail";
+        reason = err;
+    }
+end
 
 local function mkreadlist()
     readlist = {}
@@ -129,9 +144,11 @@ function event.mainloop()
         
         -- dispatch any pending events
         for _,sock in ipairs(rready) do
-            local evt = recvevt(sock)
+            local evt,err = recvevt(sock)
             if evt then
                 sockets[sock](evt)
+            else
+                killsock(sock, err)
             end
         end
         
