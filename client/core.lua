@@ -20,7 +20,7 @@ end
 -- join a game in progress
 -- fields in gameinfo struct:
 -- host port name gender
-function client.join(host, port)
+function client.join(game)
     ui.info("[client] connecting to %s:%d", game.host, game.port)
     local sock,err = socket.connect(game.host, game.port)
     
@@ -30,7 +30,7 @@ function client.join(host, port)
     end
     
     ui.info("[client] connected")
-    client.game {
+    client.game = {
         host = game.host;
         port = game.port;
         name = game.name or config.name;

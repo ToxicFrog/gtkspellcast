@@ -1,4 +1,5 @@
 function server.mkdispatcher(sock)
+    local game = server.game
     return function(evt)
         ui.debug("[server] event: %s", evt.event)
         
@@ -23,6 +24,7 @@ function server.event.default(sock, evt)
 end
 
 function server.event.iofail(sock, evt)
+    local game = server.game
     local name = game.clients[sock].name
     ui.info("[server] %s disconnected: %s", name, evt.reason)
     
