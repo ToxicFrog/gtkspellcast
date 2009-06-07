@@ -54,8 +54,9 @@ local function sendevt(sock, evt)
 end
 
 local function recvevt(sock)
-    local size = tonumber(sock:receive('*l'))
-    if not size then return nil end
+    local size,err = sock:receive('*l')
+    if not size then return nil,err end
+    if not tonumber(size) then return nil,"malformed packet" end
     
     local buf = sock:receive(size)
     return deserialize(buf)

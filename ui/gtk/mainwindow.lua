@@ -25,10 +25,9 @@ function win.JoinGameOK:clicked()
     for k,v in pairs(game) do print(k,v) end
     
     if #game.host == 0 or #game.name == 0 then
-        ui.message("[ui] You must enter a hostname and player name")
+        ui.info("[ui] You must enter a hostname and player name")
         return
     end
-    ui.message("[ui] join game: %s:%d %s %s", game.host, game.port, game.name, game.gender)
     
     win.JoinGame:hideAll()
     client.join(game)
@@ -51,7 +50,6 @@ function win.HostGameOK:clicked()
         port = win.HostGamePort:get "value";
         maxplayers = win.HostGameMaxPlayers:get "value";
     }
-    ui.message("[ui] host game: %d %d", game.port, game.maxplayers)
     
     win.HostGame:hideAll()
     server.host(game)
@@ -62,11 +60,10 @@ function win.HostGameCancel:clicked()
 end
 
 function win.SubmitButton:toggled()
-	ui.message("Submit button toggled, status is: "..tostring(self:get "active"))
+	ui.debug("Submit button toggled, status is: "..tostring(self:get "active"))
 end
 
 function win.SpellListButton:clicked()
-	ui.message("Spell list button clicked")
     ui.spell_list:showAll()
 end
 

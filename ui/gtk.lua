@@ -119,6 +119,9 @@ function ui.message(fmt, ...)
     ui.scrolltobottom()
 end
 
+ui.info = ui.message
+ui.debug = ui.message
+
 local function updateui()
     while gtk.eventsPending() do
         gtk.mainIteration()
