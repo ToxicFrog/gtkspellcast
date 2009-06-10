@@ -1,22 +1,12 @@
-bin - program binaries and launch scripts
-lib - library binaries
-client - client-specific lua code
-server - server-specific lua code
-common - code shared by client and server
-ui - interface code
-ui/* - code for a specific interface module
-src - source code for compiled stuff (custom lua terp, lunatic python, etc)
-doc - documentation
-
 (this is just a placeholder)
 
 License information: GPL 3.0. See COPYING for the text of the license.
-Everything in this source tree is copyright (c) 2007,2008 Ben Kelly,
-except for the contents of ui/gtk/images/, which are copyright (c)
-1993 Andrew Plotkin.
 
-TODO: manual text, rules text, gesture selection, question-answer support
-	+ lots of internal API stuff and the client core
-	+ the entire server
-	+ networking
-	+ some other stuff I've probably forgotten
+The following components are not mine and are covered by their respective (LGPL
+or MIT) licenses:
+- GTK+ and associated libraries
+- libglade
+- Lua 5.1
+
+Additionally, the man page (spellcast.6) and the gesture icons (ui/gtk/images/*)
+are created and copyrighted by Andrew Plotkin.

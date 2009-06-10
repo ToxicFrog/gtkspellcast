@@ -5,6 +5,37 @@
 --  connect to server
 --  wait for events and dispatch them
 
+--[[
+A typical game session at the network level
+
+>> observe
+>> say
+<< say
+
+>> join
+<< quit
+
+>> join
+<< join
+>> say
+<< say
+
+<< turn
+<< gestures
+>> gestures
+<< wait
+<< question
+<< question
+>> question
+>> question
+<< wait
+<< stab
+<< cast
+<< surrender
+<< (more spell effects)
+
+]]
+
 client = { event = {} }
 
 require "client.eventcore"
@@ -36,6 +67,7 @@ function client.join(game)
         name = game.name or config.name;
         gender = game.gender or config.gender;
         sock = sock;
+        questions = {};
     }
     
     event.register(sock, client.dispatch)
