@@ -5,12 +5,10 @@
 --      select() on open sockets for 100ms
 --      call all registered update functions
 
-package.path = "./?.lua;lib/?.lua"
+package.path = "./?.lua;lib/?.lua;"
 
---package.path = package.path.."/home/ben/devel/lualibs/?.lua;/home/ben/devel/lualibs/?/init.lua"
-
-require "socket"
 require "util"
+require "socket"
 
 require "config"
 require "events"

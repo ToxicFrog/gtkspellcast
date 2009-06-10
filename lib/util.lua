@@ -27,3 +27,7 @@ function commit_config()
     fout:close()
 end
 
+table.insert(package.loaders, 1, function(path)
+    io.stdout:write("Loading "..path.."...\n")
+    return nil
+end)

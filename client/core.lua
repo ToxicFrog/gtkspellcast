@@ -39,7 +39,6 @@ A typical game session at the network level
 client = { event = {} }
 
 require "client.eventcore"
-require "client.eventsay"
 
 function client.send(evt)
     if not client.game then

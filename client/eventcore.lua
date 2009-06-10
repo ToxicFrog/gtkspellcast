@@ -6,8 +6,9 @@ function client.dispatch(evt)
     end
     
     local fname = evt.event:gsub('%W', '_')
-    local f = client.event[fname] or client.events.default
+    local f = client.event[fname] or client.event.default
     f(evt)
+    ui.event(evt)
 end
 
 function client.event.default(evt)
