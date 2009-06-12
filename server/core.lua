@@ -5,7 +5,7 @@
 --  create listen socket
 --  register timer callback to accept incoming connections
 
-server = { event = {} }
+server = {}
 
 require "server.eventcore"
 require "server.eventsay"
@@ -18,6 +18,7 @@ local function acceptor(sock)
     if client then
         ui.info("[server] client connected: %s", client:getpeername())
         game.clients[client] = { name = "<<"..client:getpeername()..">>"; sock = client; }
+        game.nrof_clients = game.nrof_clients +1
         
         event.register(client, server.mkdispatcher(client))
     end
@@ -38,9 +39,10 @@ function server.host(game)
     server.game = {
         port = game.port;
         sock = sock;
-        nrofplayers = 0;
         clients = {};
         players = {};
+        nrof_clients = 0;
+        nrof_players = 0;
     }
 
     ui.info("[server] hosting on port %d", game.port)
@@ -61,20 +63,15 @@ function server.shutdown()
     game = nil
 end
 
-function server.killclient(client, reason)
+function server.killclient(client, why)
     local game = server.game
     event.send(client, {
-        evt = "quit";
-        reason = reason;
+        event = "quit";
+        why = why;
     })
-    client:close()
+    event.shutdown(client)
     
-    -- they were a connected player
-    if game.clients[client] then
-        -- FIXME need to swap in a replacement AI and whatnot
-        -- probably a seperate unregister_player call or similar
-        game.players[game.clients[client].name] = nil
-    end
     game.clients[client] = nil
+    game.nrof_clients = game.nrof_clients - 1
 end
 

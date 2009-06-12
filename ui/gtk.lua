@@ -99,6 +99,7 @@ ui.win = require "ui.gtk.mainwindow"
 require "ui.gtk.questions"
 require "ui.gtk.spellbook"
 require "ui.gtk.help"
+require "ui.gtk.events"
 
 --config.gtk = config.gtk or { layout = "new" }
 --require ("ui.gtk.layout."..config.gtk.layout)

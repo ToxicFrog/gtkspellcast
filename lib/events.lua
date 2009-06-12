@@ -73,13 +73,13 @@ local writebufs = {}
 local readlist,writelist
 
 local function killsock(sock, err)
-    local f = sockets[sock]
+    local f = sockets[sock] or (function() end)
     
     sock:close()
     event.unregister(sock)
     f {
         event = "iofail";
-        reason = err;
+        why = err;
     }
 end
 
@@ -102,6 +102,7 @@ end
 event = {}--{ serialize = serialize, deserialize = deserialize }
 
 function event.send(sock, evt)
+    assert(sock and evt, "bad arguments to event.send")
     table.insert(writebufs[sock], evt)
     if #writebufs[sock] == 1 then
         mkwritelist()
@@ -126,6 +127,20 @@ function event.unregister(sock)
     mkwritelist()
 end
 
+local function cleanup(sock)
+    writebufs[sock] = nil
+    sock:close()
+end
+
+function event.shutdown(sock)
+    if type(sock) == "function" then
+        timers[sock] = nil
+        return
+    end
+    sockets[sock] = nil
+    table.insert(writebufs[sock], false)
+end
+
 function event.mainloop()
     while true do
         -- the lists are automatically kept updated by the register and send functions
@@ -139,7 +154,11 @@ function event.mainloop()
             if #writebufs[sock] == 0 then
                 mkwritelist()
             end
-            sendevt(sock, evt)
+            if evt == false then
+                cleanup(sock)
+            else
+                sendevt(sock, evt)
+            end
         end
         
         -- dispatch any pending events
@@ -159,3 +178,20 @@ function event.mainloop()
    end
 end
 
+function event.dispatcher()
+    local function dispatch_event(self, evt)
+        print(evt, evt.event)
+        local fname = evt.event:gsub('%W', '_')
+        
+        local f = self[fname] or self.default
+        if self.pre then
+            if self.pre(evt) then
+                return
+            end
+        end
+        if f(evt) then return end
+        if self.post then self.post(evt) end
+    end
+    
+    return setmetatable({}, { __call = dispatch_event })
+end
