@@ -116,7 +116,7 @@ Neither</property>
         <child>
           <widget class="GtkTable" id="table3">
             <property name="visible">True</property>
-            <property name="n_rows">4</property>
+            <property name="n_rows">5</property>
             <property name="n_columns">2</property>
             <child>
               <widget class="GtkComboBox" id="JoinGameGender">
@@ -132,6 +132,7 @@ Neither</property>
                 <property name="right_attach">2</property>
                 <property name="top_attach">3</property>
                 <property name="bottom_attach">4</property>
+                <property name="y_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
@@ -144,6 +145,8 @@ Neither</property>
                 <property name="right_attach">2</property>
                 <property name="top_attach">2</property>
                 <property name="bottom_attach">3</property>
+                <property name="x_options">GTK_FILL</property>
+                <property name="y_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
@@ -176,13 +179,15 @@ Neither</property>
               <widget class="GtkSpinButton" id="JoinGamePort">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="adjustment">8006 1 65535 1 10 10</property>
+                <property name="adjustment">8008 1 65535 1 10 10</property>
               </widget>
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
                 <property name="top_attach">1</property>
                 <property name="bottom_attach">2</property>
+                <property name="x_options">GTK_FILL</property>
+                <property name="y_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
@@ -202,10 +207,13 @@ Neither</property>
               <widget class="GtkEntry" id="JoinGameHost">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="text" translatable="yes">localhost</property>
               </widget>
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
+                <property name="x_options">GTK_FILL</property>
+                <property name="y_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
@@ -217,6 +225,22 @@ Neither</property>
                 <property name="x_options">GTK_FILL</property>
                 <property name="y_options">GTK_FILL</property>
                 <property name="x_padding">8</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkCheckButton" id="JoinGameObserve">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="label" translatable="yes">Observe Only</property>
+                <property name="response_id">0</property>
+                <property name="draw_indicator">True</property>
+              </widget>
+              <packing>
+                <property name="right_attach">2</property>
+                <property name="top_attach">4</property>
+                <property name="bottom_attach">5</property>
+                <property name="x_options">GTK_FILL</property>
+                <property name="y_options">GTK_FILL</property>
               </packing>
             </child>
           </widget>
@@ -457,7 +481,7 @@ Neither</property>
                       <widget class="GtkMenuItem" id="Main Menu Join Game">
                         <property name="visible">True</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                        <property name="tooltip" translatable="yes">Join a game in progress</property>
+                        <property name="tooltip" translatable="yes">Join a game in progress as a player or observer</property>
                         <property name="label" translatable="yes">_Join Game</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="yes"/>
@@ -471,6 +495,14 @@ Neither</property>
                         <property name="label" translatable="yes">_Host Game</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="yes"/>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkMenuItem" id="MainMenuDisconnect">
+                        <property name="visible">True</property>
+                        <property name="tooltip" translatable="yes">Disconnect from a game in progress</property>
+                        <property name="label" translatable="yes">_Disconnect</property>
+                        <property name="use_underline">True</property>
                       </widget>
                     </child>
                     <child>

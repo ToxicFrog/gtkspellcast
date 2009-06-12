@@ -36,7 +36,7 @@ A typical game session at the network level
 
 ]]
 
-client = { event = {} }
+client = {}
 
 require "client.eventcore"
 
@@ -65,16 +65,26 @@ function client.join(game)
         port = game.port;
         name = game.name or config.name;
         gender = game.gender or config.gender;
+        observe = game.observe;
         sock = sock;
         questions = {};
     }
     
-    event.register(sock, client.dispatch)
+    event.register(sock, client.event)
 
     client.send {
         event = "join";
         name = game.name;
         gender = game.gender;
+        observe = game.observe;
     }
 end
 
+function client.disconnect(why)
+    client.send {
+        event = "quit";
+        why = "disconnect by user";
+    }
+    event.shutdown(client.game.sock)
+    client.game = nil
+end

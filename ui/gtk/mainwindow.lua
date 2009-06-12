@@ -21,6 +21,7 @@ function win.JoinGameOK:clicked()
         port = win.JoinGamePort:get "value";
         name = win.JoinGameName:get "text";
         gender = win.JoinGameGender:getActiveText();
+        observe = win.JoinGameObserve:get "active";
     }
     for k,v in pairs(game) do print(k,v) end
     
@@ -71,6 +72,18 @@ function win.HostGameCancel:clicked()
 end
 
 --------------------------------------------------------------------------------
+-- "Disconnect" entry
+--------------------------------------------------------------------------------
+
+function win.MainMenuDisconnect:activate()
+    if not client.game then
+        ui.message("Not connected.")
+        return
+    end
+    client.disconnect "disconnect by user"
+end
+
+--------------------------------------------------------------------------------
 -- "Options" menu
 --------------------------------------------------------------------------------
 
@@ -110,7 +123,19 @@ end
 --------------------------------------------------------------------------------
 
 function win.SubmitButton:toggled()
-	ui.debug("Submit button toggled, status is: "..tostring(self:get "active"))
+    local state = self:get "active"
+
+    if ui.questions then
+        assert(state)
+        ui.dispatch_questions()
+        ui.clear_questions()
+        self:set("active", false)
+        return
+    end
+
+    -- FIXME dispatch gestures here
+    
+    self:set("text", state and "Cancel" or "End Turn")
 end
 
 function win.SpellListButton:clicked()

@@ -5,8 +5,6 @@
 --      select() on open sockets for 100ms
 --      call all registered update functions
 
-package.path = "./?.lua;lib/?.lua;"
-
 require "util"
 require "socket"
 
@@ -19,7 +17,9 @@ require "server.core"
 
 ui.load_spellbook(require "spellbooks.classic")
 
-pcall(function() return require "autoexec" end)
+if (...) == "--autoexec" then
+    pcall(function() return require "autoexec" end)
+end
 
 event.mainloop()
 

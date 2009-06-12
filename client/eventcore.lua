@@ -1,23 +1,14 @@
-function client.dispatch(evt)
-    ui.debug("[client] event: %s", evt.event)
-    
-    for k,v in pairs(evt) do
-        ui.debug("[client][event] %s = %s", tostring(k), tostring(v))
-    end
-    
-    local fname = evt.event:gsub('%W', '_')
-    local f = client.event[fname] or client.event.default
-    f(evt)
-    ui.event(evt)
-end
+client.event = event.dispatcher()
 
 function client.event.default(evt)
-    ui.debug("[client] << %s", evt.event)
+    ui.debug("[client] event: %s", evt.event)
+end
+
+function client.event.post(evt)
+    return ui.event(evt)
 end
 
 function client.event.iofail(evt)
-    ui.info("[client] connection lost: %s", evt.reason)
+    ui.info("[client] connection lost: %s", evt.why)
     game = nil
 end
-
-
